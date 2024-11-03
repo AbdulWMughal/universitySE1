@@ -147,3 +147,13 @@ $(document).ready(function() {
         initializeBoard();
     });
 });
+
+// Function to change contrast
+function changeContrast() {
+    document.body.classList.toggle('high-contrast');
+}
+
+// Function to change font to Times New Roman
+function changeFont() {
+    document.body.classList.toggle('times-new-roman');
+}
