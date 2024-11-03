@@ -1,1 +1,4 @@
-keep track of design, activity 1 and activity 2,, just assignment brief use case flow charts, logic, test plan
+Third party API's: 
+Random Word API: https://random-word-api.herokuapp.com/home
+
+Free Dictionary API: https://dictionaryapi.dev/
