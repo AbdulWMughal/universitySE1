@@ -2,13 +2,20 @@ $(document).ready(function() {
     const MAX_ATTEMPTS = 6;
     const WORD_LENGTH = 5;
     let attempts = 0;
-    let word = getRandomWord();
+    let word = "";
     let currentRow = [];
     let guess = "";
 
-    function getRandomWord() {
-        const words = ["apple", "grape", "berry", "lemon", "peach"];
-        return words[Math.floor(Math.random() * words.length)];
+    // Function to fetch a random 5-letter word from the Random Word API
+    async function fetchRandomWord() {
+        try {
+            const response = await fetch(`https://random-word-api.herokuapp.com/word?number=1&length=${WORD_LENGTH}`);
+            const data = await response.json();
+            return data[0]; // Return the first word from the array
+        } catch (error) {
+            console.error("Error fetching random word:", error);
+            showMessage("Error fetching word. Please try again.", "red");
+        }
     }
 
     function initializeBoard() {
@@ -33,7 +40,6 @@ $(document).ready(function() {
         try {
             const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${input}`);
             if (!response.ok) {
-                // If the response is not ok, it's probably a 404 (not found)
                 return false;
             }
             const data = await response.json();
@@ -45,14 +51,21 @@ $(document).ready(function() {
     }
 
     async function handleGuess(input) {
+        if (input === "00000") {
+            showMessage("The word is: " + word.toUpperCase());
+            return;
+        }
+
         if (input.length !== WORD_LENGTH) {
             showMessage("Guess must be 5 letters.");
+            $("#guessInput").val(""); // Clear the input field
             return;
         }
 
         const isValid = await validateGuess(input);
         if (!isValid) {
             showMessage("Invalid word. Try a real word.");
+            $("#guessInput").val(""); // Clear the input field
             return;
         }
 
@@ -92,7 +105,7 @@ $(document).ready(function() {
                 showMessage("Game over! The word was " + word.toUpperCase());
                 $("#guessButton").prop("disabled", true);
             } else {
-                $("#guessInput").val("").focus();
+                $("#guessInput").val("").focus(); // Clear input field after guess
             }
         }
     }
@@ -108,11 +121,15 @@ $(document).ready(function() {
         }
     });
 
-    $("#restartButton").click(function() {
-        word = getRandomWord();
+    $("#restartButton").click(async function() {
+        word = await fetchRandomWord();
         initializeBoard();
         $("#guessButton").prop("disabled", false);
     });
 
-    initializeBoard();
+    // Start the game by fetching a random word
+    fetchRandomWord().then(fetchedWord => {
+        word = fetchedWord;
+        initializeBoard();
+    });
 });
