@@ -6,11 +6,8 @@ $(document).ready(function() {
     let currentRow = [];
     let guess = "";
 
-    // Sample word list, you may want to expand this
-    const wordList = ["apple", "grape", "berry", "lemon", "peach", "smart", "whole", "other", "words", "can", "be", "added"];
-
     function getRandomWord() {
-        const words = ["apple", "grape", "berry", "lemon", "peach"]; // Sample word list for the game
+        const words = ["apple", "grape", "berry", "lemon", "peach"];
         return words[Math.floor(Math.random() * words.length)];
     }
 
@@ -28,85 +25,64 @@ $(document).ready(function() {
         }
     }
 
-    function validateGuess(input) {
-        const url = `https://api.datamuse.com/words?sp=${input}&max=1`;
-        return $.ajax({
-            url: url,
-            method: "GET",
-            dataType: "json"
-        });
-    }
-
-    function isValidWord(word) {
-        return wordList.includes(word);
-    }
-
     function showMessage(message, color = "red") {
         $("#message").text(message).css("color", color);
     }
 
-    function isValidInput(input) {
-        // Check if input is exactly 5 letters long and contains only letters
-        const regex = /^[a-zA-Z]{5}$/;
-        return regex.test(input);
+    async function validateGuess(input) {
+        try {
+            const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${input}`);
+            if (!response.ok) {
+                // If the response is not ok, it's probably a 404 (not found)
+                return false;
+            }
+            const data = await response.json();
+            return data.length > 0; // Return true if the word is found
+        } catch (error) {
+            console.error("Error validating word:", error);
+            return false; // Return false on error
+        }
     }
 
-    function handleGuess(input) {
-        if (!isValidInput(input)) {
-            showMessage("Guess must be a valid 5-letter word without numbers or special characters.");
+    async function handleGuess(input) {
+        if (input.length !== WORD_LENGTH) {
+            showMessage("Guess must be 5 letters.");
             return;
         }
 
-        // Check the word against the local word list first
-        if (isValidWord(input)) {
-            processGuess(input);
-        } else {
-            // If not valid locally, check with the API
-            validateGuess(input).then(function(response) {
-                if (response.length === 0) {
-                    showMessage("Invalid word. Try a real word.");
-                    return;
-                }
-
-                processGuess(input);
-            }).catch(function() {
-                showMessage("Error checking word. Please try again.");
-            });
+        const isValid = await validateGuess(input);
+        if (!isValid) {
+            showMessage("Invalid word. Try a real word.");
+            return;
         }
-    }
 
-    function processGuess(input) {
         let tiles = $("#board .tile").slice(attempts * WORD_LENGTH, (attempts + 1) * WORD_LENGTH);
         let remainingWord = word.split('');
 
-        // Check for correct letters and their positions
         for (let i = 0; i < WORD_LENGTH; i++) {
             const letter = input[i];
             if (letter === word[i]) {
                 $(tiles[i]).addClass("correct");
-                remainingWord[i] = null; // Mark this letter as checked
+                remainingWord[i] = null;
             }
         }
 
-        // Check for letters that are in the word but in the wrong position
         for (let i = 0; i < WORD_LENGTH; i++) {
             const letter = input[i];
             if ($(tiles[i]).hasClass("correct")) continue;
 
             if (remainingWord.includes(letter)) {
                 $(tiles[i]).addClass("present");
-                remainingWord[remainingWord.indexOf(letter)] = null; // Mark this letter as checked
+                remainingWord[remainingWord.indexOf(letter)] = null;
             } else {
                 $(tiles[i]).addClass("absent");
             }
         }
 
-        // Display the user's guess in the tiles
         input.split('').forEach((char, index) => {
             $(tiles[index]).text(char.toUpperCase());
         });
 
-        // Check for win condition
         if (input === word) {
             showMessage("Congratulations! You guessed it!", "green");
             $("#guessButton").prop("disabled", true);
