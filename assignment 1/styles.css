@@ -88,3 +88,66 @@ p {
     height: 20px;
     margin-right: 10px;
 }
+
+/* Container positioning */
+.dropdown {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: inline-block;
+  z-index: 1000;
+}
+
+/* Button styling */
+.dropbtn {
+  background-color: #f1f1f1;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  outline: none;
+}
+
+/* Dropdown content container */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #fff;
+  min-width: 160px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: #333;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Hover effects */
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+/* Show the dropdown on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* High Contrast */
+.high-contrast {
+    background-color: #000; /* Black background */
+    color: #fff; /* White text */
+}
+
+/* Change Font to Times New Roman */
+.times-new-roman {
+    font-family: 'Times New Roman', Times, serif; /* Change font */
+}
