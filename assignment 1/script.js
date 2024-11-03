@@ -6,6 +6,18 @@ $(document).ready(function() {
     let currentRow = [];
     let guess = "";
 
+    // Check for network connectivity
+    function checkOnlineStatus() {
+        if (!navigator.onLine) {
+            showMessage("You are currently offline. Please connect to the internet to play the game.", "red");
+            $("#guessButton").prop("disabled", true); // Disable the guess button
+            $("#restartButton").prop("disabled", true); // Disable the restart button
+        } else {
+            $("#guessButton").prop("disabled", false); // Enable the guess button
+            $("#restartButton").prop("disabled", false); // Enable the restart button
+        }
+    }
+
     // Function to fetch a random 5-letter word from the Random Word API
     async function fetchRandomWord() {
         let validWord = "";
@@ -146,6 +158,13 @@ $(document).ready(function() {
         word = fetchedWord;
         initializeBoard();
     });
+
+    // Check initial online status
+    checkOnlineStatus();
+
+    // Listen for online and offline events
+    window.addEventListener('online', checkOnlineStatus);
+    window.addEventListener('offline', checkOnlineStatus);
 });
 
 // Function to change contrast
