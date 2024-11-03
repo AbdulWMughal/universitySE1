@@ -71,3 +71,20 @@ p {
     margin-top: 15px;
     color: #ff3333;
 }
+
+.color-key {
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.key-item {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+}
+
+.key-item .tile {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}

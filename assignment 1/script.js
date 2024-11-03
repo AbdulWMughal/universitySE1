@@ -8,14 +8,27 @@ $(document).ready(function() {
 
     // Function to fetch a random 5-letter word from the Random Word API
     async function fetchRandomWord() {
-        try {
-            const response = await fetch(`https://random-word-api.herokuapp.com/word?number=1&length=${WORD_LENGTH}`);
-            const data = await response.json();
-            return data[0]; // Return the first word from the array
-        } catch (error) {
-            console.error("Error fetching random word:", error);
-            showMessage("Error fetching word. Please try again.", "red");
+        let validWord = "";
+        while (true) {
+            try {
+                const response = await fetch(`https://random-word-api.herokuapp.com/word?number=1&length=${WORD_LENGTH}`);
+                const data = await response.json();
+                validWord = data[0]; // Get the first word from the response
+                
+                // Validate the fetched word using the dictionary API
+                const isValid = await validateGuess(validWord);
+                if (isValid) {
+                    return validWord; // Return the valid word
+                } else {
+                    console.log(`Fetched invalid word: ${validWord}. Fetching a new word...`);
+                }
+            } catch (error) {
+                console.error("Error fetching random word:", error);
+                showMessage("Error fetching word. Please try again.", "red");
+                break; // Break the loop on error
+            }
         }
+        return validWord; // Return empty string if no valid word found
     }
 
     function initializeBoard() {
@@ -53,6 +66,7 @@ $(document).ready(function() {
     async function handleGuess(input) {
         if (input === "00000") {
             showMessage("The word is: " + word.toUpperCase());
+            $("#guessInput").val(""); // Clear the input field after revealing the word
             return;
         }
 
