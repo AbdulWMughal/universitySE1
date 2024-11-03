@@ -8,6 +8,15 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
+
+<div class="dropdown">
+  <button class="dropbtn">Settings</button>
+  <div class="dropdown-content">
+    <a href="#" onclick="changeContrast()">High Contrast</a>
+    <a href="#" onclick="changeFont()">Change Font</a>
+  </div>
+</div>
+    
     <div class="container">
         <h1>Wordle Clone</h1>
         <p>Guess the Wordle in 6 tries. Each guess must be a valid 5-letter word. The color of the tiles will change to show how close your guess was to the word.</p>
