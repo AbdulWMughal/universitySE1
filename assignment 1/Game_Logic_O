@@ -1,0 +1,68 @@
+// Wordle game logic
+const words = ["apple", "grape", "mango", "peach", "lemon"]; // Define a list of possible words
+const answer = words[Math.floor(Math.random() * words.length)]; // Select a random word as the answer
+let attempts = 0;
+const maxAttempts = 6;
+
+// Set up the grid in HTML
+const gameDiv = document.getElementById("game");
+for (let i = 0; i < maxAttempts; i++) {
+  const row = document.createElement("div");
+  row.classList.add("grid");
+  for (let j = 0; j < answer.length; j++) {
+    const tile = document.createElement("div");
+    tile.classList.add("tile");
+    row.appendChild(tile);
+  }
+  gameDiv.appendChild(row);
+}
+
+function submitGuess() {
+  const guessInput = document.getElementById("guess");
+  const messageDiv = document.getElementById("message");
+  const guess = guessInput.value.toLowerCase();
+
+  // Validate the guess
+  if (guess.length !== answer.length) {
+    messageDiv.textContent = "Enter a 5-letter word!";
+    return;
+  }
+
+  // Find the current row of tiles
+  const row = gameDiv.children[attempts];
+  const tiles = row.children;
+
+  // Process each letter in the guess
+  for (let i = 0; i < guess.length; i++) {
+    const letter = guess[i];
+    const tile = tiles[i];
+    tile.textContent = letter;
+
+    // Apply classes based on correctness
+    if (letter === answer[i]) {
+      tile.classList.add("correct");
+    } else if (answer.includes(letter)) {
+      tile.classList.add("present");
+    } else {
+      tile.classList.add("absent");
+    }
+  }
+
+  // Check if the guess is correct
+  if (guess === answer) {
+    messageDiv.textContent = "Congratulations! You guessed the word!";
+    guessInput.disabled = true; // Disable further input
+    return;
+  }
+
+  attempts++;
+  if (attempts === maxAttempts) {
+    messageDiv.textContent = Game Over! The word was "${answer}".;
+    guessInput.disabled = true; // Disable further input
+  } else {
+    messageDiv.textContent = Attempt ${attempts} of ${maxAttempts};
+  }
+
+  // Clear the input
+  guessInput.value = "";
+}
