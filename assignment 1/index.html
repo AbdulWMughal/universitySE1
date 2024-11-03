@@ -3,18 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wordle Game</title>
+    <title>Wordle Clone</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>Wordle Game</h1>
-        <div id="board"></div>
-        <div id="message"></div>
+        <h1>Wordle Clone</h1>
+        <p>Guess the Wordle in 6 tries. Each guess must be a valid 5-letter word. The color of the tiles will change to show how close your guess was to the word.</p>
+        
+        <div id="board" class="board"></div>
+        
         <input type="text" id="guessInput" maxlength="5" placeholder="Enter 5-letter word" />
         <button id="guessButton">Guess</button>
         <button id="restartButton">Restart</button>
+        
+        <div id="message" class="message"></div>
     </div>
 
     <script src="script.js"></script>
